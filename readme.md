@@ -1,3 +1,6 @@
+# Status Badge
+[![Build Status](https://app.travis-ci.com/VeranoSA/ElectricityTopupTricks.svg?branch=main)](https://app.travis-ci.com/VeranoSA/ElectricityTopupTricks)
+
 # ElectricityTopupTricks
 
 Create a web app, to help your local Municipality to track electricity usage per household. Each month the Municipality gives each household 50 units each for free. Households can topup if they need extra electricity.
