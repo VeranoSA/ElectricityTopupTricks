@@ -115,7 +115,7 @@ describe("The Electricity meter", function() {
 		const electricityMeters = ElectricityMeters(pool);
 		const appliances = await electricityMeters.topupElectricity(3, 20);
 		const meterData = await electricityMeters.meterData(3);
-		assert.deepStrictEqual(70, meterData.balance);
+		assert.deepStrictEqual('70.00', meterData.balance);
 
 	});
 
@@ -124,7 +124,7 @@ describe("The Electricity meter", function() {
 		const electricityMeters = ElectricityMeters(pool);
 		const appliances = await electricityMeters.useElectricity(2, 20);
 		const meterData = await electricityMeters.meterData(2);
-		assert.deepStrictEqual(30, meterData.balance);
+		assert.deepStrictEqual('30.00', meterData.balance);
 
 	});
 
