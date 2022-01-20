@@ -3,7 +3,7 @@ const pg = require('pg');
 const Pool = pg.Pool;
 const ElectricityMeters = require('../electricity-meters');
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://topup:topup00@localhost:5432/topups';
+const connectionString = process.env.DATABASE_URL || 'postgresql://coder:12345@localhost:5432/topup_db';
 
 const pool = new Pool({
     connectionString  
@@ -42,8 +42,35 @@ describe("The Electricity meter", function() {
 
 		const electricityMeters = ElectricityMeters(pool);
 		const appliances = await electricityMeters.appliances();
+
+		const applianceList = [
+			{
+			  "id": 1,
+			  "name": "Stove",
+			  "rate": "4.50"
+			},
+			{
+			  "id": 2,
+			  "name": "TV",
+			  "rate": "1.80"
+			},
+			{
+			  "id": 3,
+			  "name": "Heater",
+			  "rate": "3.50"
+			},
+			{
+				"id": 4,
+				"name": "Fridge",
+				"rate": "4.00"
+			},
+			{
+				"id": 5,
+				"name": "Kettle",
+				"rate": "2.70"
+			  }]
 		
-		assert.deepStrictEqual([], appliances);
+		assert.deepStrictEqual(applianceList, appliances);
 
 	});
 
@@ -51,8 +78,35 @@ describe("The Electricity meter", function() {
 
 		const electricityMeters = ElectricityMeters(pool);
 		const appliances = await electricityMeters.appliances();
+
+		const applianceList = [
+			{
+			  "id": 1,
+			  "name": "Stove",
+			  "rate": "4.50"
+			},
+			{
+			  "id": 2,
+			  "name": "TV",
+			  "rate": "1.80"
+			},
+			{
+			  "id": 3,
+			  "name": "Heater",
+			  "rate": "3.50"
+			},
+			{
+				"id": 4,
+				"name": "Fridge",
+				"rate": "4.00"
+			},
+			{
+				"id": 5,
+				"name": "Kettle",
+				"rate": "2.70"
+			  }]
 		
-		assert.deepStrictEqual([], appliances);
+		assert.deepStrictEqual(applianceList, appliances);
 
 	});
 
