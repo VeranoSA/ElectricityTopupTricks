@@ -1,17 +1,17 @@
 const express = require('express');
-const exphbs  = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const pg = require('pg');
 const Pool = pg.Pool;
 
 const app = express();
-const PORT =  process.env.PORT || 3017;
+const PORT = process.env.PORT || 3018;
 
 const ElectricityMeters = require('./electricity-meters');
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/topups';
+const connectionString = process.env.DATABASE_URL || 'postgresql://coder:12345@localhost:5432/topup_db';
 
 const pool = new Pool({
-    connectionString  
+	connectionString
 });
 
 // enable the req.body object - to allow us to use HTML forms
@@ -28,11 +28,20 @@ app.set('view engine', 'handlebars');
 
 const electricityMeters = ElectricityMeters(pool);
 
-app.get('/', function(req, res) {
+//Default home route
+app.get('/', function (req, res) {
 	res.redirect('/streets');
 });
 
-app.get('/streets', async function(req, res) {
+//Show appliance and rates
+app.get('/appliance', async function (req, res) {
+	const appliance = await electricityMeters.appliances()
+	res.render('appliance', {
+		appliance: appliance
+	})
+})
+//Show all streets
+app.get('/streets', async function (req, res) {
 	const streets = await electricityMeters.streets();
 	console.log(streets);
 	res.render('streets', {
@@ -40,36 +49,40 @@ app.get('/streets', async function(req, res) {
 	});
 });
 
-app.get('/meter/:street_id', async function(req, res) {
-
-	// use the streetMeters method in the factory function...
-	// send the street id in as sent in by the URL parameter street_id - req.params.street_id
-
-	// create  template called street_meters.handlebars
-	// in there loop over all the meters and show them on the screen.
-	// show the street number and name and the meter balance
+// show the street number and name and the meter balance
+app.get('/meter/:street_id', async function (req, res) {
+	const streetid = req.params.street_id;
+	const streetinfo = await electricityMeters.streetMeters(streetid)
 
 	res.render('street_meters', {
-		meters
+		meters: streetinfo
 	});
 });
+// show the current meter balance and select the appliance you are using electricity for
+app.get('/meter/use/:meter_id', async function (req, res) {
+	const meterId = req.params.meter_id;
+	const selectAppliance = await electricityMeters.appliances(meterId)
 
-app.get('/meter/use/:meter_id', async function(req, res) {
 
-	// show the current meter balance and select the appliance you are using electricity for
 	res.render('use_electicity', {
-		meters
+		meters: selectAppliance,
+		meterId: meterId
 	});
 });
+// update the meter balance with the usage of the appliance selected.
+app.post('/meter/use/:meter_id', async function (req, res) {
 
-app.post('/meter/use/:meter_id', async function(req, res) {
-
-	// update the meter balance with the usage of the appliance selected.
+	
 	res.render(`/meter/user/${req.params.meter_id}`);
 
 });
 
+//List the lowest 
+app.get('/', async function (req, res) {
+	res.render('index', { lowBalance: await electricityMeters.lowestBalanceMeter() });
+});
+
 // start  the server and start listening for HTTP request on the PORT number specified...
-app.listen(PORT, function() {
+app.listen(PORT, function () {
 	console.log(`App started on port ${PORT}`)
 });
